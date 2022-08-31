@@ -1,6 +1,3 @@
-# honguito 2
+# Honguito
 
-Testing this new theme
-
-# Header 1
-## Header 2
+https://manre.github.io/honguito/
