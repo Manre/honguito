@@ -21,10 +21,10 @@
                 var interest_period = Number($("#interest_period").val());
                 var period_in_years = Number($("#years").val());
 
-                contribution_sum = 0
-                interest_sum = 0
-                final_balances = [];
-                initial_balance = initial_amount
+                var contribution_sum = 0
+                var interest_sum = 0
+                var final_balances = [];
+                var initial_balance = initial_amount;
                 for (let i = 1; i <= period_in_years; i++) {
                   annual_contribution = contribution_amount * contribution_period;
                   contribution_sum = contribution_sum + annual_contribution;
@@ -45,6 +45,33 @@
                   initial_balance = final_balance;
                 }
 
+                new Chart("myChart", {
+                  type: "bar",
+                  data: {
+                    labels: ["año 1", "año 2", "año 3", "año 4", "año 5"],
+                    datasets: [
+                        {
+                          label: 'Fully Rodunded',
+                          data: final_balances,
+                          borderWidth: 2,
+                          borderSkipped: false,
+                        }
+                    ]
+                  },
+                  options: {
+                    responsive: true,
+                    plugins: {
+                      legend: {
+                        position: 'top',
+                      },
+                      title: {
+                        display: true,
+                        text: 'Chart.js Bar Chart'
+                      }
+                    }
+                  },
+                });
+
 
             });
         });
@@ -60,27 +87,28 @@
 <form>
     <label>Paso 1: Estado inicial</label><br>
     <label>Cantidad inicial:</label><br>
-    <input type="text" id="initial_amount" value="560000"><br>
+    <input type="text" id="initial_amount"><br>
 
     <label>Paso 2: Aportes</label><br>
     <label>Valor del aporte</label><br>
-    <input type="text" id="contribution_amount" value="200"><br>
+    <input type="text" id="contribution_amount"><br>
     <label>Periodicidad del aporte</label><br>
-    <input type="text" id="contribution_period" value="12"><br>
+    <input type="text" id="contribution_period"><br>
 
     <label>Paso 3: Intereses</label><br>
     <label>Valor del interés</label><br>
-    <input type="text" id="interest_amount" value="0.05"><br>
+    <input type="text" id="interest_amount"05"><br>
     <label>Periodicidad del interés</label><br>
-    <input type="text" id="interest_period" value="12"><br>
+    <input type="text" id="interest_period"><br>
 
     <label>Paso 4: Duración</label><br>
     <label>Número de años</label><br>
-    <input type="text" id="years" value="5"><br>
+    <input type="text" id="years"><br>
 
     <input id="send" type="submit" value="Submit">
 </form>
 
+<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
 
 
 </body>
