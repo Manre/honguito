@@ -9,107 +9,122 @@
 
 </head>
 <script type='text/javascript'>
-        $(document).ready(function() {
+$(document).ready(function(){
+    $("form").submit(function(e){
+        e.preventDefault(e);
 
-            $("form").submit(function(e){
-                e.preventDefault(e);
+        var initial_amount = Number($("#initial_amount").val());
+        var contribution_amount = Number($("#contribution_amount").val());
+        var contribution_period = 12 // $("#contribution_period").val();
+        var interest_amount = Number($("#interest_amount").val());
+        var interest_period = Number($("#interest_period").val());
+        var period_in_years = Number($("#years").val());
 
-                var initial_amount = Number($("#initial_amount").val());
-                var contribution_amount = Number($("#contribution_amount").val());
-                var contribution_period = 12 // $("#contribution_period").val();
-                var interest_amount = Number($("#interest_amount").val());
-                var interest_period = Number($("#interest_period").val());
-                var period_in_years = Number($("#years").val());
+        var contribution_sum = 0
+        var interest_sum = 0
+        var final_balances = [];
+        var initial_balance = initial_amount;
 
-                var contribution_sum = 0
-                var interest_sum = 0
-                var final_balances = [];
-                var initial_balance = initial_amount;
-                for (let i = 1; i <= period_in_years; i++) {
-                  annual_contribution = contribution_amount * contribution_period;
-                  contribution_sum = contribution_sum + annual_contribution;
-                  final_balance = compoundInterest(i, initial_amount, annual_contribution, interest_amount);
-                  positive_interest = final_balance - initial_balance - annual_contribution;
-                  interest_sum = interest_sum + positive_interest;
+        for (let i = 1; i <= period_in_years; i++) {
+            annual_contribution = contribution_amount * contribution_period;
+            contribution_sum = contribution_sum + annual_contribution;
+            final_balance = compoundInterest(i, initial_amount, annual_contribution, interest_amount);
+            positive_interest = final_balance - initial_balance - annual_contribution;
+            interest_sum = interest_sum + positive_interest;
 
-                  final_balances.push(final_balance);
+            final_balances.push(final_balance);
 
-                  console.log('Balance Inicial: ' + initial_balance);
-                  console.log('Aportaciones anuales: ' + annual_contribution);
-                  console.log('Aportaciones acumuladas: ' + contribution_sum);
-                  console.log('Interés devengado: ' + positive_interest);
-                  console.log('Interés acumulado: ' + interest_sum);
-                  console.log('Balance final: ' + final_balance);
-                  console.log('===='+i+'====');
+            console.log('Balance Inicial: ' + initial_balance);
+            console.log('Aportaciones anuales: ' + annual_contribution);
+            console.log('Aportaciones acumuladas: ' + contribution_sum);
+            console.log('Interés devengado: ' + positive_interest);
+            console.log('Interés acumulado: ' + interest_sum);
+            console.log('Balance final: ' + final_balance);
+            console.log('===='+i+'====');
 
-                  initial_balance = final_balance;
+            initial_balance = final_balance;
+        }
+
+        update_chart(period_in_years, final_balances);
+    });
+});
+
+function compoundInterest(t, initial, annual, interest_rate) {
+    return initial * (1+interest_rate) ** t + annual * (1+interest_rate) * ((1+interest_rate) ** t - 1) / interest_rate;
+};
+
+function update_chart(period_in_years, final_balances) {
+    var label_names = [];
+    for (let i = 0; i < period_in_years; i++) {
+      label_names.push("Año " + i);
+    }
+
+    new Chart("myChart",{
+        type: "bar",
+        data: {
+            labels: label_names,
+            datasets: [
+                {
+                    label: 'Fully Rodunded',
+                    data: final_balances,
+                    borderWidth: 2,
+                    borderSkipped: false,
                 }
-
-                new Chart("myChart", {
-                  type: "bar",
-                  data: {
-                    labels: ["año 1", "año 2", "año 3", "año 4", "año 5"],
-                    datasets: [
-                        {
-                          label: 'Fully Rodunded',
-                          data: final_balances,
-                          borderWidth: 2,
-                          borderSkipped: false,
-                        }
-                    ]
-                  },
-                  options: {
-                    responsive: true,
-                    plugins: {
-                      legend: {
-                        position: 'top',
-                      },
-                      title: {
-                        display: true,
-                        text: 'Chart.js Bar Chart'
-                      }
-                    }
-                  },
-                });
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Chart.js Bar Chart'
+                }
+            }
+        }
+    });
+}
 
 
-            });
-        });
-
-        const compoundInterest = (t, initial, annual, interest_rate) => {
-           return initial * (1+interest_rate) ** t + annual * (1+interest_rate) * ((1+interest_rate) ** t - 1) / interest_rate;
-        };
-
-    </script>
+</script>
 <body>
 <h1>Hello, World!</h1>
 
 <form>
     <label>Paso 1: Estado inicial</label><br>
     <label>Cantidad inicial:</label><br>
-    <input type="text" id="initial_amount"><br>
+    <input type="text" id="initial_amount" value="500000"><br>
 
     <label>Paso 2: Aportes</label><br>
     <label>Valor del aporte</label><br>
-    <input type="text" id="contribution_amount"><br>
+    <input type="text" id="contribution_amount" value="200000"><br>
     <label>Periodicidad del aporte</label><br>
-    <input type="text" id="contribution_period"><br>
+    <input type="text" id="contribution_period" value="12"><br>
 
     <label>Paso 3: Intereses</label><br>
     <label>Valor del interés</label><br>
-    <input type="text" id="interest_amount"05"><br>
+    <input type="text" id="interest_amount" value="0.05"><br>
     <label>Periodicidad del interés</label><br>
-    <input type="text" id="interest_period"><br>
+    <input type="text" id="interest_period" value="mensual"><br>
 
     <label>Paso 4: Duración</label><br>
     <label>Número de años</label><br>
-    <input type="text" id="years"><br>
+    <input type="text" id="years" value="5"><br>
 
     <input id="send" type="submit" value="Submit">
 </form>
 
 <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
 
+<h1 style="display: none;">Agradecimientos</h1>
+<ul style="display: none;">
+    <li>https://www.tutorialrepublic.com/jquery-tutorial/jquery-getter-and-setter.php</li>
+    <li>https://a2-finance.com/es/calculators/todas-las-calculadoras/calculadora-de-interes-compuesto</li>
+    <li>https://www.tutorialspoint.com/calculate-compound-interest-in-javascript</li>
+    <li>https://stackoverflow.com/questions/21543017/compound-interest-with-deposits-in-python</li>
+</ul>
 
 </body>
 </html>
