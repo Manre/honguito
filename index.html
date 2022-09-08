@@ -45,7 +45,7 @@ $(document).ready(function(){
             initial_balance = final_balance;
         }
 
-        update_chart(period_in_years, final_balances);
+        build_chart(period_in_years, final_balances);
     });
 });
 
@@ -53,25 +53,28 @@ function compoundInterest(t, initial, annual, interest_rate) {
     return initial * (1+interest_rate) ** t + annual * (1+interest_rate) * ((1+interest_rate) ** t - 1) / interest_rate;
 };
 
-function update_chart(period_in_years, final_balances) {
-    var label_names = [];
+function build_chart(period_in_years, final_balances) {
+    // Create label names
+    const label_names = [];
     for (let i = 0; i < period_in_years; i++) {
       label_names.push("Año " + i);
     }
 
-    new Chart("myChart",{
-        type: "bar",
-        data: {
-            labels: label_names,
-            datasets: [
-                {
-                    label: 'Fully Rodunded',
-                    data: final_balances,
-                    borderWidth: 2,
-                    borderSkipped: false,
-                }
-            ]
-        },
+    // Create data
+    const data = {
+        labels: label_names,
+        datasets: [{
+            label: 'My First dataset',
+            data: final_balances,
+            borderWidth: 2,
+            borderSkipped: false,
+        }]
+    };
+
+    // Create config
+    const config = {
+        type: 'bar',
+        data: data,
         options: {
             responsive: true,
             plugins: {
@@ -84,7 +87,18 @@ function update_chart(period_in_years, final_balances) {
                 }
             }
         }
-    });
+    };
+
+    // Remove objects from DOM
+    $("#chart_zone").empty();
+    $('#chart_zone').append('<canvas id="myChart" style="width:100%;max-width:700px"></canvas>');
+
+    // Display new chart
+    const ctx = document.getElementById('myChart');
+    const myChart = new Chart(
+        ctx,
+        config
+    );
 }
 
 
@@ -116,7 +130,10 @@ function update_chart(period_in_years, final_balances) {
     <input id="send" type="submit" value="Submit">
 </form>
 
-<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+<div id="chart_zone">
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+</div>
+
 
 <h1 style="display: none;">Agradecimientos</h1>
 <ul style="display: none;">
