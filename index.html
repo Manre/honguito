@@ -46,7 +46,7 @@ $(document).ready(function(){
 
         build_chart(period_in_years, final_balances);
         display_final_information(
-            initial_balance,
+            initial_amount,
             annual_contribution,
             contribution_sum,
             positive_interest,
@@ -71,7 +71,7 @@ function build_chart(period_in_years, final_balances) {
     const data = {
         labels: label_names,
         datasets: [{
-            label: 'My First dataset',
+            label: 'Rendimientos Anuales',
             data: final_balances,
             borderWidth: 2,
             borderSkipped: false,
@@ -88,10 +88,6 @@ function build_chart(period_in_years, final_balances) {
                 legend: {
                     position: 'top',
                 },
-                title: {
-                    display: true,
-                    text: 'Chart.js Bar Chart'
-                }
             }
         }
     };
@@ -108,10 +104,27 @@ function build_chart(period_in_years, final_balances) {
     );
 }
 
-function display_final_information(initial_balance, annual_contribution, contribution_sum, positive_interest, interest_sum, final_balance){
-    a = 'El balance inicial fue de '+initial_balance+', las contribuciones anuales fueron de '+annual_contribution+', la suma de las contribuciones fue de '+contribution_sum
-    a = a + 'El interés fue de '+positive_interest+', la suma del interés fue de '+interest_sum+' y el balance final fue de ' + final_balance
-    $('#chart_zone').append('<p>'+a+'</p>');
+function display_final_information(initial_amount, annual_contribution, contribution_sum, positive_interest, interest_sum, final_balance){
+
+    var formatter = new Intl.NumberFormat('es-CO', {style: 'currency',currency: 'COP',maximumFractionDigits: 1});
+    formatter.format(2500);
+
+    initial_amount = formatter.format(initial_amount);
+    annual_contribution = formatter.format(annual_contribution);
+    contribution_sum = formatter.format(contribution_sum);
+    positive_interest = formatter.format(positive_interest);
+    interest_sum = formatter.format(interest_sum);
+    final_balance = formatter.format(final_balance);
+
+    $('#chart_zone').append('<ul id="facts"></ul>');
+
+    $('#facts').append('<li>El balance inicial fue de ' + initial_amount + '</li>');
+    $('#facts').append('<li>Las contribuciones anuales fueron de ' + annual_contribution + '</li>');
+    $('#facts').append('<li>La suma de las contribuciones fue de ' + contribution_sum + '</li>');
+    $('#facts').append('<li>El interés fue de ' + positive_interest + ' </li>');
+    $('#facts').append('<li>La suma del interés fue de ' + interest_sum + '</li>');
+    $('#facts').append('<li>El balance final fue de ' + final_balance + '</li>');
+
 }
 
 
