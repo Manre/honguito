@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js" integrity="sha512-zInFF17qBFVvvvFpIfeBzo7Tj7+rQxLeTJDmbxjBz5/zIr89YVbTNelNhdTT+/DCrxoVzBeUPVFJsczKbB7sew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </head>
 <script type='text/javascript'>
@@ -56,6 +57,15 @@ $(document).ready(function(){
     });
 });
 
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
 function compoundInterest(t, initial, annual, interest_rate) {
     return initial * (1+interest_rate) ** t + annual * (1+interest_rate) * ((1+interest_rate) ** t - 1) / interest_rate;
 };
@@ -67,6 +77,8 @@ function build_chart(period_in_years, final_balances) {
       label_names.push("Año " + i);
     }
 
+    var colors = chroma.scale('YlGnBu').colors(label_names.length);
+
     // Create data
     const data = {
         labels: label_names,
@@ -75,6 +87,8 @@ function build_chart(period_in_years, final_balances) {
             data: final_balances,
             borderWidth: 2,
             borderSkipped: false,
+            backgroundColor: colors,
+            borderWidth: 1,
         }]
     };
 
@@ -84,10 +98,18 @@ function build_chart(period_in_years, final_balances) {
         data: data,
         options: {
             responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
+            legend:{
+                display: false
+            },
+            tooltips: {
+                callbacks: {
+                  label: function(tooltipItem, data) {
+                    var formatter = new Intl.NumberFormat('es-CO', {style: 'currency',currency: 'COP',maximumFractionDigits: 1});
+
+                    return formatter.format(tooltipItem.value);
+
+                  }
+                }
             }
         }
     };
@@ -107,7 +129,6 @@ function build_chart(period_in_years, final_balances) {
 function display_final_information(initial_amount, annual_contribution, contribution_sum, positive_interest, interest_sum, final_balance){
 
     var formatter = new Intl.NumberFormat('es-CO', {style: 'currency',currency: 'COP',maximumFractionDigits: 1});
-    formatter.format(2500);
 
     initial_amount = formatter.format(initial_amount);
     annual_contribution = formatter.format(annual_contribution);
@@ -130,7 +151,7 @@ function display_final_information(initial_amount, annual_contribution, contribu
 
 </script>
 <body>
-<h1>Hello, World!</h1>
+<h1>Honguito</h1>
 
 <form>
     <h2>Paso 1: Estado inicial</h2><br>
