@@ -37,40 +37,44 @@
                     </div>
 
                     <div class="col-md-6">
-                        <div class="d-flex">
-                            <form>
-                                <div class="form-group">
-                                    <h4 class="display-7 fw-bolder">Paso 1: Estado inicial</h4>
-                                    <input type="text" class="form-control" id="initial_amount" aria-describedby="initialAmountHelp" placeholder="500000" value="500000">
-                                    <small class="form-text text-muted">Escribe el monto inicial con el que comenzarás la inversión, por ejemplo, $500.000</small>
-                                </div>
+                        <h2 class="display-6 fw-bolder">Calculadora de Intereses</h2>
+                        <p class="lead">Completa la información para realizar el cálculo del interés compuesto.</p>
 
-                                <div class="form-group">
-                                    <h4 class="display-7 fw-bolder">Paso 2: Aportes</h4>
-                                    <input type="text" class="form-control" id="contribution_amount" aria-describedby="contributionAmountHelp" placeholder="200000" value="200000">
-                                    <small class="form-text text-muted">Escribe el monto mensual que depositarás, por ejemplo, $200.000</small>
-                                </div>
+                        <form>
+                            <div class="form-group">
+                                <h4 class="display-7 fw-bolder">Paso 1: Estado inicial</h4>
+                                <input type="text" class="form-control" id="initial_amount" aria-describedby="initialAmountHelp" placeholder="500000" value="500000">
+                                <small class="form-text text-muted">Escribe el monto inicial con el que comenzarás la inversión, por ejemplo, $500.000</small>
+                            </div>
 
-                                <div class="form-group">
-                                    <h4 class="display-7 fw-bolder">Paso 3: Intereses</h4>
-                                    <input type="text" class="form-control" id="interest_amount" aria-describedby="interestAmountHelp" placeholder="0.05" value="0.05">
-                                    <small class="form-text text-muted">Escribe el interés anual que tu dinero rendirá, por ejemplo, 0.05 (5%)</small>
-                                </div>
+                            <div class="form-group">
+                                <h4 class="display-7 fw-bolder">Paso 2: Aportes</h4>
+                                <input type="text" class="form-control" id="contribution_amount" aria-describedby="contributionAmountHelp" placeholder="200000" value="200000">
+                                <small class="form-text text-muted">Escribe el monto mensual que depositarás, por ejemplo, $200.000</small>
+                            </div>
 
-                                <div class="form-group">
-                                    <h4 class="display-7 fw-bolder">Paso 4: Duración</h4>
-                                    <input type="text" class="form-control" id="years" aria-describedby="yearsHelp" placeholder="5" value="5">
-                                    <small class="form-text text-muted">Escribe número de años por el cual realizarás los aportes</small>
-                                </div>
+                            <div class="form-group">
+                                <h4 class="display-7 fw-bolder">Paso 3: Intereses</h4>
+                                <input type="text" class="form-control" id="interest_amount" aria-describedby="interestAmountHelp" placeholder="0.05" value="0.05">
+                                <small class="form-text text-muted">Escribe el interés anual que tu dinero rendirá, por ejemplo, 0.05 (5%)</small>
+                            </div>
 
+                            <div class="form-group">
+                                <h4 class="display-7 fw-bolder">Paso 4: Duración</h4>
+                                <input type="text" class="form-control" id="years" aria-describedby="yearsHelp" placeholder="5" value="5">
+                                <small class="form-text text-muted">Escribe número de años por el cual realizarás los aportes</small>
+                            </div>
+
+                            <p class="lead">Por último, da click en el botón para realizar el cálculo.</p>
+
+                            <div class="d-flex">
                                 <button class="btn btn-outline-dark flex-shrink-0" type="submit">
                                     <i class="bi bi-calculator me-1"></i>
                                     Calcular
                                 </button>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
-
                 </div>
             </div>
         </section>
