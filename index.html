@@ -31,23 +31,46 @@
         <section class="py-5">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="https://dummyimage.com/600x700/dee2e6/6c757d.jpg" alt="..." /></div>
+
+                    <div id="chart_zone" class="col-md-6">
+                        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+                    </div>
+
                     <div class="col-md-6">
-                        <div class="small mb-1">SKU: BST-498</div>
-                        <h1 class="display-5 fw-bolder">Shop item template</h1>
-                        <div class="fs-5 mb-5">
-                            <span class="text-decoration-line-through">$45.00</span>
-                            <span>$40.00</span>
-                        </div>
-                        <p class="lead">Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium at dolorem quidem modi. Nam sequi consequatur obcaecati excepturi alias magni, accusamus eius blanditiis delectus ipsam minima ea iste laborum vero?</p>
                         <div class="d-flex">
-                            <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
-                            <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                                <i class="bi-cart-fill me-1"></i>
-                                Add to cart
-                            </button>
+                            <form>
+                                <div class="form-group">
+                                    <h4 class="display-7 fw-bolder">Paso 1: Estado inicial</h4>
+                                    <input type="text" class="form-control" id="initial_amount" aria-describedby="initialAmountHelp" placeholder="500000" value="500000">
+                                    <small class="form-text text-muted">Escribe el monto inicial con el que comenzarás la inversión, por ejemplo, $500.000</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <h4 class="display-7 fw-bolder">Paso 2: Aportes</h4>
+                                    <input type="text" class="form-control" id="contribution_amount" aria-describedby="contributionAmountHelp" placeholder="200000" value="200000">
+                                    <small class="form-text text-muted">Escribe el monto mensual que depositarás, por ejemplo, $200.000</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <h4 class="display-7 fw-bolder">Paso 3: Intereses</h4>
+                                    <input type="text" class="form-control" id="interest_amount" aria-describedby="interestAmountHelp" placeholder="0.05" value="0.05">
+                                    <small class="form-text text-muted">Escribe el interés anual que tu dinero rendirá, por ejemplo, 0.05 (5%)</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <h4 class="display-7 fw-bolder">Paso 4: Duración</h4>
+                                    <input type="text" class="form-control" id="years" aria-describedby="yearsHelp" placeholder="5" value="5">
+                                    <small class="form-text text-muted">Escribe número de años por el cual realizarás los aportes</small>
+                                </div>
+
+                                <button class="btn btn-outline-dark flex-shrink-0" type="submit">
+                                    <i class="bi-cart-fill me-1"></i>
+                                    Calcular
+                                </button>
+                            </form>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -59,5 +82,140 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
         <!-- Core theme JS-->
         <script src="js/scripts.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js" integrity="sha512-zInFF17qBFVvvvFpIfeBzo7Tj7+rQxLeTJDmbxjBz5/zIr89YVbTNelNhdTT+/DCrxoVzBeUPVFJsczKbB7sew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <script type='text/javascript'>
+            $(document).ready(function(){
+                $("form").submit(function(e){
+                    e.preventDefault(e);
+
+                    var initial_amount = Number($("#initial_amount").val());
+                    var contribution_amount = Number($("#contribution_amount").val());
+                    var contribution_period = 12 // months
+                    var interest_amount = Number($("#interest_amount").val());
+                    var period_in_years = Number($("#years").val());
+
+                    var contribution_sum = 0
+                    var interest_sum = 0
+                    var final_balances = [];
+                    var initial_balance = initial_amount;
+
+                    for (let i = 1; i <= period_in_years; i++) {
+                        annual_contribution = contribution_amount * contribution_period;
+                        contribution_sum = contribution_sum + annual_contribution;
+                        final_balance = compoundInterest(i, initial_amount, annual_contribution, interest_amount);
+                        positive_interest = final_balance - initial_balance - annual_contribution;
+                        interest_sum = interest_sum + positive_interest;
+
+                        final_balances.push(final_balance);
+
+                        console.log('Balance Inicial: ' + initial_balance);
+                        console.log('Aportaciones anuales: ' + annual_contribution);
+                        console.log('Aportaciones acumuladas: ' + contribution_sum);
+                        console.log('Interés devengado: ' + positive_interest);
+                        console.log('Interés acumulado: ' + interest_sum);
+                        console.log('Balance final: ' + final_balance);
+                        console.log('===='+i+'====');
+
+                        initial_balance = final_balance;
+                    }
+
+                    build_chart(period_in_years, final_balances);
+                    display_final_information(
+                        initial_amount,
+                        annual_contribution,
+                        contribution_sum,
+                        positive_interest,
+                        interest_sum,
+                        final_balance
+                    )
+                });
+            });
+
+            function compoundInterest(t, initial, annual, interest_rate) {
+                return initial * (1+interest_rate) ** t + annual * (1+interest_rate) * ((1+interest_rate) ** t - 1) / interest_rate;
+            };
+
+            function build_chart(period_in_years, final_balances) {
+                // Create label names
+                const label_names = [];
+                for (let i = 1; i <= period_in_years; i++) {
+                  label_names.push("Año " + i);
+                }
+
+                var colors = chroma.scale('YlGnBu').colors(label_names.length);
+
+                // Create data
+                const data = {
+                    labels: label_names,
+                    datasets: [{
+                        label: 'Rendimientos Anuales',
+                        data: final_balances,
+                        borderWidth: 2,
+                        borderSkipped: false,
+                        backgroundColor: colors,
+                        borderWidth: 1,
+                    }]
+                };
+
+                // Create config
+                const config = {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        legend:{
+                            display: false
+                        },
+                        tooltips: {
+                            callbacks: {
+                              label: function(tooltipItem, data) {
+                                var formatter = new Intl.NumberFormat('es-CO', {style: 'currency',currency: 'COP',maximumFractionDigits: 1});
+
+                                return formatter.format(tooltipItem.value);
+
+                              }
+                            }
+                        }
+                    }
+                };
+
+                // Remove objects from DOM
+                $("#chart_zone").empty();
+                $('#chart_zone').append('<canvas id="myChart" style="width:100%;max-width:700px"></canvas>');
+
+                // Display new chart
+                const ctx = document.getElementById('myChart');
+                const myChart = new Chart(
+                    ctx,
+                    config
+                );
+            }
+
+            function display_final_information(initial_amount, annual_contribution, contribution_sum, positive_interest, interest_sum, final_balance){
+
+                var formatter = new Intl.NumberFormat('es-CO', {style: 'currency',currency: 'COP',maximumFractionDigits: 1});
+
+                initial_amount = formatter.format(initial_amount);
+                annual_contribution = formatter.format(annual_contribution);
+                contribution_sum = formatter.format(contribution_sum);
+                positive_interest = formatter.format(positive_interest);
+                interest_sum = formatter.format(interest_sum);
+                final_balance = formatter.format(final_balance);
+
+                $('#chart_zone').append('<ul id="facts"></ul>');
+
+                $('#facts').append('<li>El balance inicial fue de ' + initial_amount + '</li>');
+                $('#facts').append('<li>Las contribuciones anuales fueron de ' + annual_contribution + '</li>');
+                $('#facts').append('<li>La suma de las contribuciones fue de ' + contribution_sum + '</li>');
+                $('#facts').append('<li>El interés fue de ' + positive_interest + ' </li>');
+                $('#facts').append('<li>La suma del interés fue de ' + interest_sum + '</li>');
+                $('#facts').append('<li>El balance final fue de ' + final_balance + '</li>');
+
+            }
+        </script>
     </body>
 </html>
