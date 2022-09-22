@@ -32,10 +32,6 @@
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
 
-                    <div id="chart_zone" class="col-md-6">
-                        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
-                    </div>
-
                     <div class="col-md-6">
                         <h2 class="display-6 fw-bolder">Calculadora de Intereses</h2>
                         <p class="lead">Completa la información para realizar el cálculo del interés compuesto.</p>
@@ -67,13 +63,17 @@
 
                             <p class="lead">Por último, da click en el botón para realizar el cálculo.</p>
 
-                            <div class="d-flex">
+                            <div class="d-flex pb-4">
                                 <button class="btn btn-outline-dark flex-shrink-0" type="submit">
                                     <i class="bi bi-calculator me-1"></i>
                                     Calcular
                                 </button>
                             </div>
                         </form>
+                    </div>
+
+                    <div id="chart_zone" class="col-md-6">
+                        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
                     </div>
                 </div>
             </div>
