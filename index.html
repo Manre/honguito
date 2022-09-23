@@ -101,6 +101,9 @@
                     var contribution_period = 12 // months
                     var interest_amount = Number($("#interest_amount").val());
                     var period_in_years = Number($("#years").val());
+                    var base_amounts = Array(period_in_years).fill(initial_amount);
+                    var contributions_per_period = [];
+                    var interests_per_period = [];
 
                     var contribution_sum = 0
                     var interest_sum = 0
@@ -115,6 +118,8 @@
                         interest_sum = interest_sum + positive_interest;
 
                         final_balances.push(final_balance);
+                        contributions_per_period.push(contribution_sum);
+                        interests_per_period.push(interest_sum);
 
                         console.log('Balance Inicial: ' + initial_balance);
                         console.log('Aportaciones anuales: ' + annual_contribution);
@@ -127,7 +132,13 @@
                         initial_balance = final_balance;
                     }
 
-                    build_chart(period_in_years, final_balances);
+                    build_chart(
+                        period_in_years,
+                        final_balances,
+                        base_amounts,
+                        contributions_per_period,
+                        interests_per_period
+                    );
                     display_final_information(
                         initial_amount,
                         annual_contribution,
@@ -143,26 +154,44 @@
                 return initial * (1+interest_rate) ** t + annual * (1+interest_rate) * ((1+interest_rate) ** t - 1) / interest_rate;
             };
 
-            function build_chart(period_in_years, final_balances) {
+            function build_chart(period_in_years, final_balances, base_amounts, contributions_per_period, interests_per_period) {
                 // Create label names
                 const label_names = [];
                 for (let i = 1; i <= period_in_years; i++) {
                   label_names.push("Año " + i);
                 }
 
-                var colors = chroma.scale('YlGnBu').colors(label_names.length);
+                var initial_colors = chroma.scale(['a6cee3']).colors(label_names.length);
+                var contributions_colors = chroma.scale(['1f78b4']).colors(label_names.length);
+                var interests_colors = chroma.scale(['b2df8a']).colors(label_names.length);
 
                 // Create data
                 const data = {
                     labels: label_names,
-                    datasets: [{
-                        label: 'Rendimientos Anuales',
-                        data: final_balances,
-                        borderWidth: 2,
-                        borderSkipped: false,
-                        backgroundColor: colors,
-                        borderWidth: 1,
-                    }]
+                    datasets: [
+                        {
+                            label: 'Cantidad Inicial',
+                            data: base_amounts,
+                            borderSkipped: false,
+                            backgroundColor: initial_colors,
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Aportes',
+                            data: contributions_per_period,
+                            borderSkipped: false,
+                            backgroundColor: contributions_colors,
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Intereses',
+                            data: interests_per_period,
+                            borderSkipped: false,
+                            backgroundColor: interests_colors,
+                            borderWidth: 1,
+                        },
+
+                    ]
                 };
 
                 // Create config
@@ -170,18 +199,41 @@
                     type: 'bar',
                     data: data,
                     options: {
+                        scales: {
+                            xAxes: [{
+                                stacked: true
+                            }],
+                            yAxes: [{
+                                stacked: true
+                            }]
+                        },
                         responsive: true,
                         legend:{
-                            display: false
+                            display: true
                         },
                         tooltips: {
                             callbacks: {
-                              label: function(tooltipItem, data) {
-                                var formatter = new Intl.NumberFormat('es-CO', {style: 'currency',currency: 'COP',maximumFractionDigits: 1});
+                                label: function(tooltipItem, data) {
+                                    var formatter = new Intl.NumberFormat(
+                                        'es-CO',
+                                        {
+                                            style: 'currency',
+                                            currency: 'COP',
+                                            maximumFractionDigits: 1
+                                        }
+                                    );
+                                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
 
-                                return formatter.format(tooltipItem.value);
+                                    if (label) {
+                                        label += ': ';
+                                    }
 
-                              }
+                                    if (tooltipItem.value !== null) {
+                                        label += formatter.format(tooltipItem.value);
+                                    }
+
+                                    return label;
+                                }
                             }
                         }
                     }
