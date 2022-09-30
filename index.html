@@ -87,7 +87,7 @@
                         </ul>
                         <div class="tab-content" id="myTabContent">
                             <div id="general_canvas_div" class="tab-pane fade show active" role="tabpanel" aria-labelledby="general-chart">
-                                pera
+                                <canvas id="general_canvas" style="width:100%;max-width:700px"></canvas>
                             </div>
                             <div id="detailed_canvas_div" class="tab-pane fade" role="tabpanel" aria-labelledby="profile-tab">
                                 <canvas id="detailed_canvas" style="width:100%;max-width:700px"></canvas>
@@ -158,6 +158,7 @@
                         contributions_per_period,
                         interests_per_period
                     );
+                    build_general_chart(period_in_years, final_balances, contributions_per_period);
                     display_final_information(
                         initial_amount,
                         annual_contribution,
@@ -171,6 +172,83 @@
 
             function compoundInterest(t, initial, annual, interest_rate) {
                 return initial * (1+interest_rate) ** t + annual * (1+interest_rate) * ((1+interest_rate) ** t - 1) / interest_rate;
+            };
+
+            function build_general_chart(period_in_years, final_balances, contributions_per_period){
+                // Create label names
+                const label_names = [];
+                for (let i = 1; i <= period_in_years; i++) {
+                  label_names.push("Año " + i);
+                }
+
+                // Create data
+                const data = {
+                    labels: label_names,
+                    datasets: [
+                        {
+                            label: 'Cantidad Inicial',
+                            data: final_balances,
+                            borderSkipped: false,
+                            borderColor: 'red',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Aportes',
+                            data: contributions_per_period,
+                            borderSkipped: false,
+                            borderColor: 'blue',
+                            borderWidth: 1,
+                        }
+                    ]
+                };
+
+                // Create config
+                const config = {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        legend:{
+                            display: true
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    var formatter = new Intl.NumberFormat(
+                                        'es-CO',
+                                        {
+                                            style: 'currency',
+                                            currency: 'COP',
+                                            maximumFractionDigits: 1
+                                        }
+                                    );
+                                    var label = data.datasets[tooltipItem.datasetIndex].label || '';
+
+                                    if (label) {
+                                        label += ': ';
+                                    }
+
+                                    if (tooltipItem.value !== null) {
+                                        label += formatter.format(tooltipItem.value);
+                                    }
+
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                };
+
+                // Remove objects from DOM
+                $("#general_canvas_div").empty();
+                $('#general_canvas_div').append('<canvas id="general_canvas" style="width:100%;max-width:700px"></canvas>');
+
+                // Display new chart
+                const ctx = document.getElementById('general_canvas');
+                const general_chart = new Chart(
+                    ctx,
+                    config
+                );
             };
 
             function build_chart(period_in_years, final_balances, base_amounts, contributions_per_period, interests_per_period) {
