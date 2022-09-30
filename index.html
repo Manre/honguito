@@ -72,8 +72,27 @@
                         </form>
                     </div>
 
-                    <div id="chart_zone" class="col-md-6">
-                        <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+                    <div class="col-md-6">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="general-chart" data-bs-toggle="tab"
+                                        data-bs-target="#general_canvas_div" type="button" role="tab" aria-controls="General"
+                                        aria-selected="true">General</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                        data-bs-target="#detailed_canvas_div" type="button" role="tab" aria-controls="Detallado"
+                                        aria-selected="false">Detallado</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div id="general_canvas_div" class="tab-pane fade show active" role="tabpanel" aria-labelledby="general-chart">
+                                pera
+                            </div>
+                            <div id="detailed_canvas_div" class="tab-pane fade" role="tabpanel" aria-labelledby="profile-tab">
+                                <canvas id="detailed_canvas" style="width:100%;max-width:700px"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -240,12 +259,12 @@
                 };
 
                 // Remove objects from DOM
-                $("#chart_zone").empty();
-                $('#chart_zone').append('<canvas id="myChart" style="width:100%;max-width:700px"></canvas>');
+                $("#detailed_canvas_div").empty();
+                $('#detailed_canvas_div').append('<canvas id="detailed_canvas" style="width:100%;max-width:700px"></canvas>');
 
                 // Display new chart
-                const ctx = document.getElementById('myChart');
-                const myChart = new Chart(
+                const ctx = document.getElementById('detailed_canvas');
+                const detailed_chart = new Chart(
                     ctx,
                     config
                 );
@@ -262,7 +281,7 @@
                 interest_sum = formatter.format(interest_sum);
                 final_balance = formatter.format(final_balance);
 
-                $('#chart_zone').append('<ul id="facts"></ul>');
+                $('#detailed_canvas_div').append('<ul id="facts"></ul>');
 
                 $('#facts').append('<li>El balance inicial fue de ' + initial_amount + '</li>');
                 $('#facts').append('<li>Las contribuciones anuales fueron de ' + annual_contribution + '</li>');
