@@ -101,6 +101,17 @@
                 </div>
             </div>
         </section>
+        <!-- Related items section-->
+        <section class="py-5 bg-light">
+            <div class="container px-4 px-lg-5 mt-5">
+                <h2 class="fw-bolder mb-4">Resumen</h2>
+                <div class="row" id="summary">
+                    <ul>
+                        <li>Completa la información de arriba para conocer el resumen de tu inversión</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
         <!-- Footer-->
         <footer class="py-5 bg-dark">
             <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Honguito 2022</p></div>
@@ -363,14 +374,14 @@
                 interest_sum = formatter.format(interest_sum);
                 final_balance = formatter.format(final_balance);
 
-                $('#detailed_canvas_div').append('<ul id="facts"></ul>');
+                $("#summary").empty();
+                $('#summary').append('<ul id="facts"></ul>');
 
-                $('#facts').append('<li>El balance inicial fue de ' + initial_amount + '</li>');
-                $('#facts').append('<li>Las contribuciones anuales fueron de ' + annual_contribution + '</li>');
-                $('#facts').append('<li>La suma de las contribuciones fue de ' + contribution_sum + '</li>');
-                $('#facts').append('<li>El interés fue de ' + positive_interest + ' </li>');
-                $('#facts').append('<li>La suma del interés fue de ' + interest_sum + '</li>');
-                $('#facts').append('<li>El balance final fue de ' + final_balance + '</li>');
+                $('#facts').append('<li>Iniciaste con ' + initial_amount + '</li>');
+                $('#facts').append('<li>Con tus contribuciones mensuales ahorraste ' + contribution_sum + '</li>');
+                $('#facts').append('<li>Si hubieras ahorrado debajo de tu colchón hubieras perdido ' + interest_sum + ', pero como ahorraste con interés compuesto, ¡ganaste! </li>');
+                $('#facts').append('<li>Y bueno... en total hoy tienes ' + final_balance + '</li>');
+                $('#summary').append('<h4>¡Felicitaciones!</h4>');
 
             }
         </script>
