@@ -127,63 +127,69 @@
 
         <script type='text/javascript'>
             $(document).ready(function(){
+                init();
+
                 $("form").submit(function(e){
                     e.preventDefault(e);
 
-                    var initial_amount = Number($("#initial_amount").val());
-                    var contribution_amount = Number($("#contribution_amount").val());
-                    var contribution_period = 12 // months
-                    var interest_amount = Number($("#interest_amount").val());
-                    var period_in_years = Number($("#years").val());
-                    var base_amounts = Array(period_in_years).fill(initial_amount);
-                    var contributions_per_period = [];
-                    var interests_per_period = [];
-
-                    var contribution_sum = 0
-                    var interest_sum = 0
-                    var final_balances = [];
-                    var initial_balance = initial_amount;
-
-                    for (let i = 1; i <= period_in_years; i++) {
-                        annual_contribution = contribution_amount * contribution_period;
-                        contribution_sum = contribution_sum + annual_contribution;
-                        final_balance = compoundInterest(i, initial_amount, annual_contribution, interest_amount);
-                        positive_interest = final_balance - initial_balance - annual_contribution;
-                        interest_sum = interest_sum + positive_interest;
-
-                        final_balances.push(final_balance);
-                        contributions_per_period.push(contribution_sum);
-                        interests_per_period.push(interest_sum);
-
-                        console.log('Balance Inicial: ' + initial_balance);
-                        console.log('Aportaciones anuales: ' + annual_contribution);
-                        console.log('Aportaciones acumuladas: ' + contribution_sum);
-                        console.log('Interés devengado: ' + positive_interest);
-                        console.log('Interés acumulado: ' + interest_sum);
-                        console.log('Balance final: ' + final_balance);
-                        console.log('===='+i+'====');
-
-                        initial_balance = final_balance;
-                    }
-
-                    build_chart(
-                        period_in_years,
-                        final_balances,
-                        base_amounts,
-                        contributions_per_period,
-                        interests_per_period
-                    );
-                    build_general_chart(period_in_years, final_balances, contributions_per_period);
-                    display_final_information(
-                        initial_amount,
-                        annual_contribution,
-                        contribution_sum,
-                        positive_interest,
-                        interest_sum,
-                        final_balance
-                    )
+                    init();
                 });
             });
+
+            function init(){
+                var initial_amount = Number($("#initial_amount").val());
+                var contribution_amount = Number($("#contribution_amount").val());
+                var contribution_period = 12 // months
+                var interest_amount = Number($("#interest_amount").val());
+                var period_in_years = Number($("#years").val());
+                var base_amounts = Array(period_in_years).fill(initial_amount);
+                var contributions_per_period = [];
+                var interests_per_period = [];
+
+                var contribution_sum = 0
+                var interest_sum = 0
+                var final_balances = [];
+                var initial_balance = initial_amount;
+
+                for (let i = 1; i <= period_in_years; i++) {
+                    annual_contribution = contribution_amount * contribution_period;
+                    contribution_sum = contribution_sum + annual_contribution;
+                    final_balance = compoundInterest(i, initial_amount, annual_contribution, interest_amount);
+                    positive_interest = final_balance - initial_balance - annual_contribution;
+                    interest_sum = interest_sum + positive_interest;
+
+                    final_balances.push(final_balance);
+                    contributions_per_period.push(contribution_sum);
+                    interests_per_period.push(interest_sum);
+
+                    console.log('Balance Inicial: ' + initial_balance);
+                    console.log('Aportaciones anuales: ' + annual_contribution);
+                    console.log('Aportaciones acumuladas: ' + contribution_sum);
+                    console.log('Interés devengado: ' + positive_interest);
+                    console.log('Interés acumulado: ' + interest_sum);
+                    console.log('Balance final: ' + final_balance);
+                    console.log('===='+i+'====');
+
+                    initial_balance = final_balance;
+                }
+
+                build_chart(
+                    period_in_years,
+                    final_balances,
+                    base_amounts,
+                    contributions_per_period,
+                    interests_per_period
+                );
+                build_general_chart(period_in_years, final_balances, contributions_per_period);
+                display_final_information(
+                    initial_amount,
+                    annual_contribution,
+                    contribution_sum,
+                    positive_interest,
+                    interest_sum,
+                    final_balance
+                )
+            };
 
             function compoundInterest(t, initial, annual, interest_rate) {
                 return initial * (1+interest_rate) ** t + annual * (1+interest_rate) * ((1+interest_rate) ** t - 1) / interest_rate;
